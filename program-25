@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <dirent.h>
+
+int main() {
+    // Open a file using open system call
+    int fd = open("file.txt", O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR);
+    if (fd == -1) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    } else {
+        printf("File opened successfully.\n");
+    }
+
+    // Use fcntl system call to get and set file descriptor flags
+    int flags = fcntl(fd, F_GETFL, 0);
+    if (flags == -1) {
+        perror("Error getting file flags");
+    } else {
+        printf("File descriptor flags: %d\n", flags);
+    }
+
+    // Use lseek to move the file pointer
+    int offset = 10;
+    off_t newPos = lseek(fd, offset, SEEK_SET);
+    if (newPos == -1) {
+        perror("Error setting file position");
+    } else {
+        printf("File pointer moved to position: %ld\n", newPos);
+    }
+
+    // Use stat system call to get file information
+    struct stat fileStat;
+    if (stat("file.txt", &fileStat) == -1) {
+        perror("Error getting file status");
+    } else {
+        printf("File size: %ld bytes\n", fileStat.st_size);
+    }
+
+    // Open a directory using opendir and read its contents using readdir
+    DIR* dir = opendir(".");
+    if (!dir) {
+        perror("Error opening directory");
+        exit(EXIT_FAILURE);
+    }
+
+    struct dirent *dirEntry;
+    while ((dirEntry = readdir(dir)) != NULL) {
+        printf("Filename: %s\n", dirEntry->d_name);
+    }
+
+    closedir(dir);
+    close(fd);
+
+    return 0;
+}
