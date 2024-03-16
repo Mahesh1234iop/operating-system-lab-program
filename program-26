@@ -1,0 +1,75 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void createFile() {
+    FILE *file = fopen("file.txt", "w");
+    if(file == NULL) {
+        perror("Error creating file");
+        exit(EXIT_FAILURE);
+    } else {
+        printf("File created successfully.\n");
+        fclose(file);
+    }
+}
+
+void writeFile() {
+    FILE *file = fopen("file.txt", "w");
+    if(file == NULL) {
+        perror("Error opening file for writing");
+        exit(EXIT_FAILURE);
+    } else {
+        char *content = "This is some data written to the file.";
+        fprintf(file, "%s", content);
+        printf("Data written to file.\n");
+        fclose(file);
+    }
+}
+
+void appendFile() {
+    FILE *file = fopen("file.txt", "a");
+    if(file == NULL) {
+        perror("Error opening file for appending");
+        exit(EXIT_FAILURE);
+    } else {
+        char *content = " This is some additional data appended to the file.";
+        fprintf(file, "%s", content);
+        printf("Data appended to file.\n");
+        fclose(file);
+    }
+}
+
+void readFile() {
+    FILE *file = fopen("file.txt", "r");
+    if(file == NULL) {
+        perror("Error opening file for reading");
+        exit(EXIT_FAILURE);
+    } else {
+        char buffer[100];
+        if(fgets(buffer, 100, file) != NULL) {
+            printf("Data read from file: %s\n", buffer);
+        } else {
+            printf("Error reading from file.\n");
+        }
+        fclose(file);
+    }
+}
+
+void deleteFile() {
+    if(remove("file.txt") != 0) {
+        perror("Error deleting file");
+    } else {
+        printf("File deleted successfully.\n");
+    }
+}
+
+int main() {
+    createFile();
+    writeFile();
+    readFile();
+    appendFile();
+    readFile();
+    deleteFile();
+    
+    return 0;
+}
