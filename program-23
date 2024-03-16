@@ -1,0 +1,55 @@
+#include <stdio.h>
+
+#define NUM_BLOCKS 10
+#define NUM_PROCESSES 5
+
+int memoryBlocks[NUM_BLOCKS];
+int processSizes[NUM_PROCESSES] = {212, 417, 112, 426, 514};
+
+void initializeMemory() {
+    for (int i = 0; i < NUM_BLOCKS; i++) {
+        memoryBlocks[i] = -1;
+    }
+}
+
+void firstFit() {
+    int i, j;
+    for (i = 0; i < NUM_PROCESSES; i++) {
+        for (j = 0; j < NUM_BLOCKS; j++) {
+            if (memoryBlocks[j] == -1 && processSizes[i] <= j + 1) {
+                memoryBlocks[j] = i;
+                break;
+            }
+        }
+        if (j == NUM_BLOCKS) {
+            printf("Process %d of size %d cannot be allocated.\n", i, processSizes[i]);
+        } else {
+            printf("Process %d of size %d was allocated to block %d.\n", i, processSizes[i], j);
+        }
+    }
+}
+
+void displayMemoryBlocks() {
+    printf("Memory Blocks Allocation:\n");
+    for (int i = 0; i < NUM_BLOCKS; i++) {
+        if (memoryBlocks[i] != -1) {
+            printf("Block %d -> Process %d (Size %d)\n", i, memoryBlocks[i], processSizes[memoryBlocks[i]]);
+        } else {
+            printf("Block %d -> Free\n", i);
+        }
+    }
+}
+
+int main() {
+    initializeMemory();
+
+    printf("Memory Blocks before allocation:\n");
+    displayMemoryBlocks();
+
+    firstFit();
+
+    printf("\nMemory Blocks after allocation:\n");
+    displayMemoryBlocks();
+
+    return 0;
+}
